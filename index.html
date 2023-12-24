@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线复利计算器</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyT9ADmLDa1DriqS2rsj4CkY4M2Ozm2Hb" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-...（具体的哈希值）" crossorigin="anonymous" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f0f0f0;
+      margin: 20px;
+    }
+
+    #calculator {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      color: #495057;
+    }
+
+    input.form-control {
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    input.form-control:focus {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+
+    #resultTable {
+      margin-top: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8f9fa;
+    }
+
+    #finalResult {
+      margin-top: 20px;
+      display: none;
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 8px;
+      padding: 10px;
+      color: #155724;
+    }
+  </style>
+</head>
+<body>
+
+<div id="calculator">
+  <h1 class="mb-4 text-center text-primary">在线复利计算器</h1>
+  <form id="compoundForm">
+    <div class="form-group">
+      <label for="principal">本金：</label>
+      <input type="number" class="form-control" id="principal" required>
+    </div>
+
+    <div class="form-group">
+      <label for="interestRate">利率（年利率）：</label>
+      <input type="number" class="form-control" id="interestRate" step="0.01" required>
+    </div>
+
+    <div class="form-group">
+      <label for="compoundingPeriods">复利周期：</label>
+      <input type="number" class="form-control" id="compoundingPeriods" required>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-block" onclick="calculateCompoundInterest()">
+      <i class="fas fa-calculator"></i> 计算
+    </button>
+  </form>
+
+  <table id="resultTable" class="table mt-4" style="display: none;">
+    <thead>
+      <tr>
+        <th>周期</th>
+        <th>本金</th>
+        <th>利息</th>
+        <th>总额</th>
+      </tr>
+    </thead>
+    <tbody id="resultBody">
+    </tbody>
+  </table>
+
+  <div id="finalResult" class="mt-4">
+    <strong>最终总额：</strong> <span id="finalAmount"></span>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-Vkoo8x4CGsZAA0VxgeDYBv8O+joB6YHApz4KxpPh/K1QajjDAF3EVLKHvscF3PIs" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyT9ADmLDa1DriqS2rsj4CkY4M2Ozm2Hb" crossorigin="anonymous"></script>
+
+<script>
+  function calculateCompoundInterest() {
+    const principal = parseFloat(document.getElementById('principal').value);
+    const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+    const compoundingPeriods = parseInt(document.getElementById('compoundingPeriods').value);
+
+    let resultBody = document.getElementById('resultBody');
+    resultBody.innerHTML = '';
+
+    let totalAmount = principal;
+
+    for (let i = 1; i <= compoundingPeriods; i++) {
+      const interest = totalAmount * interestRate;
+      totalAmount += interest;
+
+      let row = resultBody.insertRow();
+      let cell1 = row.insertCell(0);
+      let cell2 = row.insertCell(1);
+      let cell3 = row.insertCell(2);
+      let cell4 = row.insertCell(3);
+
+      cell1.textContent = i;
+      cell2.textContent = principal.toFixed(2);
+      cell3.textContent = interest.toFixed(2);
+      cell4.textContent = totalAmount.toFixed(2);
+    }
+
+    document.getElementById('resultTable').style.display = 'table';
+
+    // 显示最终总额
+    document.getElementById('finalResult').style.display = 'block';
+    document.getElementById('finalAmount').textContent = totalAmount.toFixed(2);
+  }
+</script>
+
+</body>
+</html>
