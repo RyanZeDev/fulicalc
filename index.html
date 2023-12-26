@@ -77,20 +77,26 @@
       padding: 10px;
       color: #155724;
     }
+
+    /* 新增样式 */
+    #toggleTableBtn {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
 
 <div id="calculator">
   <h1 class="mb-4 text-center text-primary">在线复利计算器</h1>
+  
   <form id="compoundForm">
     <div class="form-group">
-      <label for="principal">本金：</label>
+      <label for="principal">初始本金：</label>
       <input type="number" class="form-control" id="principal" required>
     </div>
 
     <div class="form-group">
-      <label for="interestRate">利率（年利率）：</label>
+      <label for="interestRate">利率：</label>
       <input type="number" class="form-control" id="interestRate" step="0.01" required>
     </div>
 
@@ -99,16 +105,23 @@
       <input type="number" class="form-control" id="compoundingPeriods" required>
     </div>
 
-    <button type="button" class="btn btn-primary btn-block" onclick="calculateCompoundInterest()">
-      <i class="fas fa-calculator"></i> 计算
-    </button>
+    <div class="d-flex justify-content-between">
+      <button type="button" class="btn btn-primary" onclick="calculateCompoundInterest()">
+        <i class="fas fa-calculator"></i> 计算
+      </button>
+      
+      <!-- 修改按钮 -->
+      <button type="button" class="btn btn-primary" id="toggleTableBtn" onclick="toggleTable()">
+        <i class="fas fa-chevron-up"></i> 展开表格
+      </button>
+    </div>
   </form>
 
   <table id="resultTable" class="table mt-4" style="display: none;">
     <thead>
       <tr>
         <th>周期</th>
-        <th>本金</th>
+        <th>本息合计</th>
         <th>利息</th>
         <th>总额</th>
       </tr>
@@ -148,7 +161,7 @@
       let cell4 = row.insertCell(3);
 
       cell1.textContent = i;
-      cell2.textContent = principal.toFixed(2);
+      cell2.textContent = totalAmount.toFixed(2);
       cell3.textContent = interest.toFixed(2);
       cell4.textContent = totalAmount.toFixed(2);
     }
@@ -158,6 +171,20 @@
     // 显示最终总额
     document.getElementById('finalResult').style.display = 'block';
     document.getElementById('finalAmount').textContent = totalAmount.toFixed(2);
+  }
+
+  // 修改函数
+  function toggleTable() {
+    let table = document.getElementById('resultTable');
+    let btn = document.getElementById('toggleTableBtn');
+
+    if (table.style.display === 'none') {
+      table.style.display = 'table';
+      btn.innerHTML = '<i class="fas fa-chevron-up"></i> 收缩表格';
+    } else {
+      table.style.display = 'none';
+      btn.innerHTML = '<i class="fas fa-chevron-down"></i> 展开表格';
+    }
   }
 </script>
 
